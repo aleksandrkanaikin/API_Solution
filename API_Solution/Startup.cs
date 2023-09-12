@@ -1,7 +1,6 @@
 ﻿using API_Solution.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using NLog;
-using API_Solution.Extensions;
 
 namespace ShopApi;
 

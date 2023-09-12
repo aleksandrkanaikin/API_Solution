@@ -1,4 +1,7 @@
-﻿namespace API_Solution.Extensions
+﻿using Contracts;
+using LoggerService;
+
+namespace API_Solution.Extensions
 {
     public static class ServiceExtensions
     {
@@ -15,5 +18,8 @@
             {
 
             });
+        public static void ConfigureLoggerService(this IServiceCollection services) =>
+            services.AddScoped<ILoggerManager, LoggerManager>();
+
     }
 }
