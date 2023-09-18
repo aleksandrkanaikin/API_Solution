@@ -21,7 +21,7 @@ namespace API_Solution.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            _repository.Company.Delete1(_company);
+            _repository.Company.Delete(_company);
             _repository.Employee.Create(_employee);
             return new string[] { "value1", "value2" };
         }
