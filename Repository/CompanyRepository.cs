@@ -10,5 +10,8 @@ namespace Repository
         : base(repositoryContext)
         {
         }
+
+        public void Delete1(Company company) => Delete(company); 
+      
     }
 }

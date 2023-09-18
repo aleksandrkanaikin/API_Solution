@@ -10,5 +10,7 @@ namespace Repository
         : base(repositoryContext)
         {
         }
+
+        public void Create1(Employee employee) => Create(employee);
     }
 }
