@@ -10,5 +10,7 @@ namespace Repository
         : base(repositoryContext)
         {
         }
+
+        public IEnumerable<Car> GetAllCars(bool trackChanges) => FindAll(trackChanges).OrderBy(c=> c.Brend).ToList();
     }
 }

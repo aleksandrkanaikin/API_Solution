@@ -10,5 +10,7 @@ namespace Repository
         : base(repositoryContext)        
         {
         }
+
+        public IEnumerable<Driver> GetAllDrivers(bool trackChanges) => FindAll(trackChanges).OrderBy(c => c.Name).ToList();
     }
 }
