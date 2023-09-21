@@ -9,8 +9,7 @@ public class Startup
 {
     public Startup(IConfiguration configuration)
     {
-        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(),
-            "/nlog.config"));
+        LogManager.LoadConfiguration(string.Concat(Directory.GetCurrentDirectory(), "/nlog.config"));
         Configuration = configuration;
     }
 
