@@ -5,8 +5,8 @@ namespace Entities.Models
 {
     public class Car
     {
-        [Column("CompanyId")]
-        public int Id { get; set; }
+        [Column("CarId")]
+        public Guid Id { get; set; }
         [Required(ErrorMessage = "Car brend is a required field.")]
         [MaxLength(30, ErrorMessage = "Maximum length for the Name is 30 characters.")]
         public string Brend { get; set; }
