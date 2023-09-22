@@ -35,7 +35,7 @@ namespace API_Solution.Controllers
             return Ok(carsDto);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetCarForDriver")]
         public ActionResult GetCarWithHelpDriver(Guid driverId, Guid carId)
         {
             var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
@@ -52,6 +52,27 @@ namespace API_Solution.Controllers
             }
             var carDto = _mapper.Map<CarDto>(carDB);
             return Ok(carDto);
+        }
+
+        [HttpPost]
+        public IActionResult CreateCarForDriver(Guid driverId, [FromBody] CarForCreationDto car)
+        {
+            if (car == null)
+            {
+                _logger.LogError("CarForCreationDto object sent from client is  null.");
+                return BadRequest("CarForCreationDto object is null");
+            }
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if(driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carEntity = _mapper.Map<Car>(car);
+            _repository.Car.CreateCarForDriver(driverId,carEntity);
+            _repository.Save();
+            var carToReturn = _mapper.Map<CarDto>(carEntity);
+            return CreatedAtRoute("GetCarForDriver", new { driverId, id = carToReturn.Id }, carToReturn);
         }
     }
 }

@@ -14,7 +14,8 @@ namespace API_Solution
             CreateMap<Driver, DriverDto>();
             CreateMap<CompanyForCreationDto, Company>();
             CreateMap<EmployeeForCreationDto, Employee>();
-
+            CreateMap<DriverForCreatonDto, Driver>();
+            CreateMap<CarForCreationDto, Car>();
         }
     }
 }
