@@ -11,8 +11,9 @@ namespace Repository
         {
         }
 
-        public IEnumerable<Car> GetAllCars(bool trackChanges) => FindAll(trackChanges).OrderBy(c=> c.Brend).ToList();
+        public IEnumerable<Car> GetCars(Guid driverId, bool trackChanges) => 
+            FindByCondition(c => c.DriverId.Equals(driverId), trackChanges).OrderBy(e => e.Brend);
         public Car GetCarById(Guid driverId, Guid id, bool trackChanges) => FindByCondition(c => c.DriverId.Equals(driverId) &&
-                                c.Id.Equals(id), trackChanges).SingleOrDefault();
+            c.Id.Equals(id), trackChanges).SingleOrDefault();
     }
 }

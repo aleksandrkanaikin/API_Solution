@@ -29,8 +29,7 @@ namespace API_Solution.Controllers
                 _logger.LogInfo($"Company with id: {companyId} doesn't exist in the database.");
                 return NotFound();
             }
-            var employeesFromDb = _repository.Employee.GetEmployees(companyId,
-            trackChanges: false);
+            var employeesFromDb = _repository.Employee.GetEmployees(companyId, trackChanges: false);
             var employeesDto = _mapper.Map<IEnumerable<EmployeeDto>>(employeesFromDb);
             return Ok(employeesDto);
 
