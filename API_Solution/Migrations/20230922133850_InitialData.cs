@@ -14,19 +14,6 @@ namespace API_Solution.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Cars",
-                columns: table => new
-                {
-                    CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Brend = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Model = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cars", x => x.CarId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Companies",
                 columns: table => new
                 {
@@ -52,12 +39,6 @@ namespace API_Solution.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Drivers", x => x.DriverId);
-                    table.ForeignKey(
-                        name: "FK_Drivers_Cars_CarId",
-                        column: x => x.CarId,
-                        principalTable: "Cars",
-                        principalColumn: "CarId",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -81,13 +62,24 @@ namespace API_Solution.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "Cars",
-                columns: new[] { "CarId", "Brend", "Model" },
-                values: new object[,]
+            migrationBuilder.CreateTable(
+                name: "Cars",
+                columns: table => new
                 {
-                    { new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"), "BMW", "5-series" },
-                    { new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"), "Toyota", "Avensis" }
+                    CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Brend = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Model = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cars", x => x.CarId);
+                    table.ForeignKey(
+                        name: "FK_Cars_Drivers_DriverId",
+                        column: x => x.DriverId,
+                        principalTable: "Drivers",
+                        principalColumn: "DriverId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
@@ -104,8 +96,17 @@ namespace API_Solution.Migrations
                 columns: new[] { "DriverId", "Address", "CarId", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"), "Volgogradskaya 74", new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"), "Ruslan Palytin" },
-                    { new Guid("305a8736-8187-4854-8686-f6869493b302"), "Voroshilova 5", new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"), "Aleksandr Kanaikin" }
+                    { new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"), "Volgogradskaya 74", new Guid("00000000-0000-0000-0000-000000000000"), "Ruslan Palytin" },
+                    { new Guid("305a8736-8187-4854-8686-f6869493b302"), "Voroshilova 5", new Guid("00000000-0000-0000-0000-000000000000"), "Aleksandr Kanaikin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Cars",
+                columns: new[] { "CarId", "Brend", "DriverId", "Model" },
+                values: new object[,]
+                {
+                    { new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"), "BMW", new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"), "5-series" },
+                    { new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"), "Toyota", new Guid("305a8736-8187-4854-8686-f6869493b302"), "Avensis" }
                 });
 
             migrationBuilder.InsertData(
@@ -119,9 +120,9 @@ namespace API_Solution.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Drivers_CarId",
-                table: "Drivers",
-                column: "CarId");
+                name: "IX_Cars_DriverId",
+                table: "Cars",
+                column: "DriverId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_CompanyId",
@@ -133,13 +134,13 @@ namespace API_Solution.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Drivers");
+                name: "Cars");
 
             migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Cars");
+                name: "Drivers");
 
             migrationBuilder.DropTable(
                 name: "Companies");

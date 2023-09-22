@@ -16,6 +16,6 @@ namespace Entities.Models
         
         [ForeignKey(nameof(Car))]
         public Guid CarId { get; set; }
-        public Car Car { get; set; }
+        public ICollection<Car> Cars { get; set; }
     }
 }
