@@ -14,5 +14,9 @@ namespace Entities.Models
         [MaxLength(30, ErrorMessage = "Maximum length for rhe Address is 30 characte")]
         public string Model { get; set; }
 
+        [ForeignKey(nameof(Driver))]
+        public Guid DriverId { get; set; }
+        public Driver Driver { get; set; }
+
     }
 }
