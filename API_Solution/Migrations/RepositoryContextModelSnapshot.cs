@@ -24,17 +24,18 @@ namespace API_Solution.Migrations
 
             modelBuilder.Entity("Entities.Models.Car", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("CompanyId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("CarId");
 
                     b.Property<string>("Brend")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
+
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Model")
                         .IsRequired()
@@ -43,19 +44,23 @@ namespace API_Solution.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("DriverId");
+
                     b.ToTable("Cars");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"),
                             Brend = "Toyota",
+                            DriverId = new Guid("305a8736-8187-4854-8686-f6869493b302"),
                             Model = "Avensis"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"),
                             Brend = "BMW",
+                            DriverId = new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"),
                             Model = "5-series"
                         });
                 });
@@ -104,11 +109,10 @@ namespace API_Solution.Migrations
 
             modelBuilder.Entity("Entities.Models.Driver", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("DriverId");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -127,13 +131,13 @@ namespace API_Solution.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            Id = new Guid("305a8736-8187-4854-8686-f6869493b302"),
                             Address = "Voroshilova 5",
                             Name = "Aleksandr Kanaikin"
                         },
                         new
                         {
-                            Id = 2,
+                            Id = new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"),
                             Address = "Volgogradskaya 74",
                             Name = "Ruslan Palytin"
                         });
@@ -195,6 +199,17 @@ namespace API_Solution.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Entities.Models.Car", b =>
+                {
+                    b.HasOne("Entities.Models.Driver", "Driver")
+                        .WithMany("Cars")
+                        .HasForeignKey("DriverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Driver");
+                });
+
             modelBuilder.Entity("Entities.Models.Employee", b =>
                 {
                     b.HasOne("Entities.Models.Company", "Company")
@@ -209,6 +224,11 @@ namespace API_Solution.Migrations
             modelBuilder.Entity("Entities.Models.Company", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("Entities.Models.Driver", b =>
+                {
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }

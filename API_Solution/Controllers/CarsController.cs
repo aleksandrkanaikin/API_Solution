@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Solution.Controllers
 {
-    [Route("api/cars")]
+    [Route("api/drivers/{driverId}/cars")]
     [ApiController]
     public class CarsController : ControllerBase
     {
@@ -22,11 +22,36 @@ namespace API_Solution.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCars()
-        { 
-            var cars = _repository.Car.GetAllCars(trackChanges: false);
-            var carsDto = _mapper.Map<IEnumerable<CarDto>>(cars);
+        public ActionResult GetCarsWithHelpDriver(Guid driverId)
+        {
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if(driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carsFromDB = _repository.Car.GetCars(driverId, trackChanges: false);
+            var carsDto = _mapper.Map<IEnumerable<CarDto>>(carsFromDB);
             return Ok(carsDto);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult GetCarWithHelpDriver(Guid driverId, Guid carId)
+        {
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if (driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carDB = _repository.Car.GetCarById(driverId,carId, trackChanges: false);
+            if(carDB == null)
+            {
+                _logger.LogInfo($"Car with id: {carId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carDto = _mapper.Map<CarDto>(carDB);
+            return Ok(carDto);
         }
     }
 }
