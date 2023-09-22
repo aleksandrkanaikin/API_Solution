@@ -13,9 +13,6 @@ namespace Entities.Models
         [Required(ErrorMessage = "Company address is a required field.")]
         [MaxLength(60, ErrorMessage = "Maximum length for rhe Address is 60 characte")]
         public string Address { get; set; }
-        
-        [ForeignKey(nameof(Car))]
-        public Guid CarId { get; set; }
         public ICollection<Car> Cars { get; set; }
     }
 }

@@ -119,9 +119,6 @@ namespace API_Solution.Migrations
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
-                    b.Property<Guid>("CarId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -136,14 +133,12 @@ namespace API_Solution.Migrations
                         {
                             Id = new Guid("305a8736-8187-4854-8686-f6869493b302"),
                             Address = "Voroshilova 5",
-                            CarId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "Aleksandr Kanaikin"
                         },
                         new
                         {
                             Id = new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"),
                             Address = "Volgogradskaya 74",
-                            CarId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "Ruslan Palytin"
                         });
                 });
