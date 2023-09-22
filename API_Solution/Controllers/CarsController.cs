@@ -28,5 +28,21 @@ namespace API_Solution.Controllers
             var carsDto = _mapper.Map<IEnumerable<CarDto>>(cars);
             return Ok(carsDto);
         }
+
+        [HttpGet("{id}")]
+        public IActionResult GetCar(Guid id)
+        {
+            var car = _repository.Car.GetCarById(id, trackChanges: false);
+            if (car == null)
+            {
+                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            else
+            {
+                var carDto = _mapper.Map<CarDto>(car);
+                return Ok(carDto);
+            }
+        }
     }
 }
