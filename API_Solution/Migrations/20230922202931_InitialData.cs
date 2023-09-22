@@ -33,8 +33,7 @@ namespace API_Solution.Migrations
                 {
                     DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
-                    CarId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Address = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -93,11 +92,11 @@ namespace API_Solution.Migrations
 
             migrationBuilder.InsertData(
                 table: "Drivers",
-                columns: new[] { "DriverId", "Address", "CarId", "Name" },
+                columns: new[] { "DriverId", "Address", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"), "Volgogradskaya 74", new Guid("00000000-0000-0000-0000-000000000000"), "Ruslan Palytin" },
-                    { new Guid("305a8736-8187-4854-8686-f6869493b302"), "Voroshilova 5", new Guid("00000000-0000-0000-0000-000000000000"), "Aleksandr Kanaikin" }
+                    { new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"), "Volgogradskaya 74", "Ruslan Palytin" },
+                    { new Guid("305a8736-8187-4854-8686-f6869493b302"), "Voroshilova 5", "Aleksandr Kanaikin" }
                 });
 
             migrationBuilder.InsertData(
