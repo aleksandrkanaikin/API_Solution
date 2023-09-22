@@ -34,12 +34,17 @@ namespace API_Solution.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid>("DriverId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Model")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("DriverId");
 
                     b.ToTable("Cars");
 
@@ -48,12 +53,14 @@ namespace API_Solution.Migrations
                         {
                             Id = new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"),
                             Brend = "Toyota",
+                            DriverId = new Guid("305a8736-8187-4854-8686-f6869493b302"),
                             Model = "Avensis"
                         },
                         new
                         {
                             Id = new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"),
                             Brend = "BMW",
+                            DriverId = new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"),
                             Model = "5-series"
                         });
                 });
@@ -122,8 +129,6 @@ namespace API_Solution.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CarId");
-
                     b.ToTable("Drivers");
 
                     b.HasData(
@@ -131,14 +136,14 @@ namespace API_Solution.Migrations
                         {
                             Id = new Guid("305a8736-8187-4854-8686-f6869493b302"),
                             Address = "Voroshilova 5",
-                            CarId = new Guid("b9e4d52a-129a-4277-a559-37600c6da2c6"),
+                            CarId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "Aleksandr Kanaikin"
                         },
                         new
                         {
                             Id = new Guid("27feac3d-b9d9-429f-8ca4-a520513fa714"),
                             Address = "Volgogradskaya 74",
-                            CarId = new Guid("0e6191bc-2cbb-47ab-b4f9-246a3a7ecb7d"),
+                            CarId = new Guid("00000000-0000-0000-0000-000000000000"),
                             Name = "Ruslan Palytin"
                         });
                 });
@@ -199,15 +204,15 @@ namespace API_Solution.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Entities.Models.Driver", b =>
+            modelBuilder.Entity("Entities.Models.Car", b =>
                 {
-                    b.HasOne("Entities.Models.Car", "Car")
-                        .WithMany()
-                        .HasForeignKey("CarId")
+                    b.HasOne("Entities.Models.Driver", "Driver")
+                        .WithMany("Cars")
+                        .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Car");
+                    b.Navigation("Driver");
                 });
 
             modelBuilder.Entity("Entities.Models.Employee", b =>
@@ -224,6 +229,11 @@ namespace API_Solution.Migrations
             modelBuilder.Entity("Entities.Models.Company", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("Entities.Models.Driver", b =>
+                {
+                    b.Navigation("Cars");
                 });
 #pragma warning restore 612, 618
         }
