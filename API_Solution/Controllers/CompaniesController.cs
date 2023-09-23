@@ -83,7 +83,7 @@ namespace API_Solution.Controllers
         }
 
         [HttpPost("collection")]
-        public IActionResult CreateCompanyCollection([FromBody] IEnumerable<CompanyForCreationDto> companyCollection)
+        public IActionResult CreateCompanyCollection([ModelBinder (BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> companyCollection)
         {
             if (companyCollection == null)
             {
