@@ -31,7 +31,9 @@ public class Startup
         {
             config.RespectBrowserAcceptHeader = true;
             config.ReturnHttpNotAcceptable = true;
-        }).AddXmlDataContractSerializerFormatters().AddCustomCSVFormatter();
+        }).AddNewtonsoftJson() 
+        .AddXmlDataContractSerializerFormatters()
+        .AddCustomCSVFormatter();
 
     }
 

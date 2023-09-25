@@ -16,6 +16,12 @@ namespace API_Solution
             CreateMap<EmployeeForCreationDto, Employee>();
             CreateMap<DriverForCreatonDto, Driver>();
             CreateMap<CarForCreationDto, Car>();
+            CreateMap<EmployeeForUpdateDto, Employee>();
+            CreateMap<CompanyForUpdateDto, Company>();
+            CreateMap<CarForUpdateDto, Car>();
+            CreateMap<DriverForUpdateDto, Driver>();
+            CreateMap<EmployeeForUpdateDto, Employee>().ReverseMap();
+            CreateMap<CarForUpdateDto, Car>().ReverseMap();
         }
     }
 }

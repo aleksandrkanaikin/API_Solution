@@ -15,5 +15,6 @@ namespace Repository
         public Driver GetDriver(Guid id, bool trackChanges) => FindByCondition(c => c.Id.Equals(id), trackChanges).SingleOrDefault();
         public void CreateDriver(Driver driver) => Create(driver);
         public IEnumerable<Driver> GetByIds(IEnumerable<Guid> ids, bool trackChanges) => FindByCondition(x => ids.Contains(x.Id), trackChanges).ToList();
+        public void DeleteDriver(Driver driver) => Delete(driver);
     }
 }

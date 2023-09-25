@@ -20,5 +20,6 @@ namespace Repository
             car.DriverId = driverId;
             Create(car);
         }
+        public void DeleteCar(Car car) => Delete(car);
     }
 }

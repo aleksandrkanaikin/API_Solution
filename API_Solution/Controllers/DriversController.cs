@@ -66,7 +66,7 @@ namespace API_Solution.Controllers
                 _logger.LogError("Parameter ids is null");
                 return BadRequest("Parameter ids is null");
             }
-            var driverEntities = _repository.Driver.GetByIds(ids, trackChanges: false);
+            var driverEntities = _repository.Driver.GetByIds(ids, trackChanges: true);
             if (ids.Count() != driverEntities.Count())
             {
                 _logger.LogError("Some ids are not valid in a collection");
@@ -93,6 +93,39 @@ namespace API_Solution.Controllers
             var driverCollectionToReturn = _mapper.Map<IEnumerable<DriverDto>>(driverEntitiees);
             var ids = string.Join(",", driverCollectionToReturn.Select(c => c.Id));
             return CreatedAtRoute("DriverCollection", new { ids }, driverCollectionToReturn);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteDriver(Guid id)
+        {
+            var driver = _repository.Driver.GetDriver(id, trackChanges: false);
+            if(driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Driver.DeleteDriver(driver);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCompany(Guid id, [FromBody] DriverForUpdateDto driver)
+        {
+            if (driver == null)
+            { 
+                _logger.LogError("DriverForUpdateDto object sent from client is null.");
+                return BadRequest("DriverForUpdateDto object is null");
+            }
+            var driverEntity = _repository.Driver.GetDriver(id, trackChanges: true);
+            if (driverEntity == null)
+            {
+                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _mapper.Map(driver, driverEntity);
+            _repository.Save();
+            return NoContent();
         }
     }
 }

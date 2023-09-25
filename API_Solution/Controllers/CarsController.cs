@@ -3,6 +3,7 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_Solution.Controllers
@@ -44,7 +45,7 @@ namespace API_Solution.Controllers
                 _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
                 return NotFound();
             }
-            var carDB = _repository.Car.GetCarById(driverId,carId, trackChanges: false);
+            var carDB = _repository.Car.GetCarById(driverId, carId, trackChanges: false);
             if(carDB == null)
             {
                 _logger.LogInfo($"Car with id: {carId} doesn't exist in the database.");
@@ -73,6 +74,78 @@ namespace API_Solution.Controllers
             _repository.Save();
             var carToReturn = _mapper.Map<CarDto>(carEntity);
             return CreatedAtRoute("GetCarForDriver", new { driverId, id = carToReturn.Id }, carToReturn);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteCarForDriver(Guid driverId, Guid carId) 
+        { 
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if(driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carForDriver = _repository.Car.GetCarById(driverId, carId, trackChanges: false);
+            if (carForDriver == null)
+            {
+                _logger.LogInfo($"Car with id: {carId} doesn't exist in the database.");
+                return NotFound();
+            }
+            _repository.Car.DeleteCar(carForDriver);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult UpdateCarForDriver(Guid driverId, Guid id, [FromBody] CarForUpdateDto car)
+        {
+            if (car == null)
+            {
+                _logger.LogError("CarForUpdateDto object sent from client is null.");
+                return BadRequest("CarForUpdateDto object is null");
+            }
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if (driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carEntity = _repository.Car.GetCarById(driverId, id, trackChanges: true);
+            if (carEntity == null)
+            {
+                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            _mapper.Map(car, carEntity);
+            _repository.Save();
+            return NoContent();
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult PartiallyUpdateCarForDriver(Guid driverId, Guid id, [FromBody] JsonPatchDocument<CarForUpdateDto> patchDoc)
+        {
+            if (patchDoc == null)
+            {
+                _logger.LogError("patchDoc object sent from client is null.");
+                return BadRequest("patchDoc object is null");
+            }
+            var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
+            if (driver == null)
+            {
+                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carEntity = _repository.Car.GetCarById(driverId, id, trackChanges: true);
+            if (carEntity == null)
+            {
+                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
+                return NotFound();
+            }
+            var carToPatch = _mapper.Map<CarForUpdateDto>(carEntity);
+            patchDoc.ApplyTo(carToPatch);
+            _mapper.Map(carToPatch, carEntity);
+            _repository.Save();
+            return NoContent(); 
         }
     }
 }
