@@ -77,7 +77,7 @@ namespace API_Solution.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult DeleteCarForDriver(Guid driverId, Guid carId) 
+        public IActionResult DeleteCarForDriver(Guid driverId, Guid id) 
         { 
             var driver = _repository.Driver.GetDriver(driverId, trackChanges: false);
             if(driver == null)
@@ -85,10 +85,10 @@ namespace API_Solution.Controllers
                 _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
                 return NotFound();
             }
-            var carForDriver = _repository.Car.GetCarById(driverId, carId, trackChanges: false);
+            var carForDriver = _repository.Car.GetCarById(driverId, id, trackChanges: false);
             if (carForDriver == null)
             {
-                _logger.LogInfo($"Car with id: {carId} doesn't exist in the database.");
+                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
             _repository.Car.DeleteCar(carForDriver);
