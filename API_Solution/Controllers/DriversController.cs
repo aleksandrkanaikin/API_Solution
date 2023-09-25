@@ -31,12 +31,12 @@ namespace API_Solution.Controllers
         }
 
         [HttpGet("{id}", Name = "DriverById")]
-        public IActionResult GetDriver(Guid driverId)
+        public IActionResult GetDriver(Guid id)
         {
-            var driver =_repository.Driver.GetDriver(driverId, trackChanges: false);
+            var driver =_repository.Driver.GetDriver(id, trackChanges: false);
             if(driver == null)
             {
-                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
+                _logger.LogInfo($"Driver with id: {id} doesn't exist in the database.");
                 return NotFound();
             }
             var driverDto = _mapper.Map<DriverDto>(driver);
