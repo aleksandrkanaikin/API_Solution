@@ -6,6 +6,6 @@
         IEmployeeRepository Employee { get; }
         ICarRepository Car { get; }
         IDriverRepository Driver { get; }
-        void Save();
+        public Task SaveAsync();
     }
 }

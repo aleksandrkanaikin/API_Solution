@@ -1,6 +1,7 @@
 ﻿using API_Solution.Extensions;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Mvc;
 using NLog;
 
 namespace ShopApi;
@@ -34,6 +35,10 @@ public class Startup
         }).AddNewtonsoftJson() 
         .AddXmlDataContractSerializerFormatters()
         .AddCustomCSVFormatter();
+        services.Configure<ApiBehaviorOptions>(options =>
+        {
+            options.SuppressModelStateInvalidFilter = true;
+        });
 
     }
 

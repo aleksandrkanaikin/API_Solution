@@ -4,10 +4,10 @@ namespace Contracts
 {
     public interface IDriverRepository
     {
-        IEnumerable<Driver> GetAllDrivers(bool trackChanges);
-        public Driver GetDriver(Guid id, bool trackChanges);
+        Task<IEnumerable<Driver>> GetAllDriversAsync(bool trackChanges);
+        public Task<Driver> GetDriverAsync(Guid id, bool trackChanges);
         void CreateDriver(Driver driver);       
-        IEnumerable<Driver> GetByIds(IEnumerable<Guid> ids, bool trackChanges);
+        Task<IEnumerable<Driver>> GetByIdsAsync(IEnumerable<Guid> ids, bool trackChanges);
         void DeleteDriver(Driver driver);
     }
 }

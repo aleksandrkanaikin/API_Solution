@@ -1,8 +1,7 @@
 ﻿namespace Entities.DataTransferObjects
 {
-    public class CarForUpdateDto
+    public class CarForUpdateDto: CarForManipulationDto
     {
-        public string Brend { get; set; }
-        public string Model { get; set; }
+
     }
 }
