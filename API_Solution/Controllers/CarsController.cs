@@ -1,10 +1,14 @@
-﻿using AutoMapper;
+﻿using API_Solution.ActionFilters;
+using API_Solution.ModelBinders;
+using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
 using Entities.Models;
+using Entities.RequestFeatures;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace API_Solution.Controllers
 {
@@ -23,15 +27,16 @@ namespace API_Solution.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetCarsWithHelpDriver(Guid driverId)
+        public async Task<ActionResult> GetCarsWithHelpDriver(Guid driverId, [FromQuery] CarParameters carParameters)
         {
-            var driver = _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
+            var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
             if(driver == null)
             {
                 _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
                 return NotFound();
             }
-            var carsFromDB = await _repository.Car.GetCarsAsync(driverId, trackChanges: false);
+            var carsFromDB = await _repository.Car.GetCarsAsync(driverId, carParameters, trackChanges: false);
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(carsFromDB.MetaData));
             var carsDto = _mapper.Map<IEnumerable<CarDto>>(carsFromDB);
             return Ok(carsDto);
         }
@@ -39,13 +44,13 @@ namespace API_Solution.Controllers
         [HttpGet("{id}", Name = "GetCarForDriver")]
         public async Task<ActionResult> GetCarWithHelpDriver(Guid driverId, Guid id)
         {
-            var driver = _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
+            var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
             if (driver == null)
             {
                 _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
                 return NotFound();
             }
-            var carDB = await _repository.Car.GetCarByIdAsync(driverId,id, trackChanges: false);
+            var carDB = await _repository.Car.GetCarByIdAsync(driverId, id, trackChanges: false);
             if(carDB == null)
             {
                 _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
@@ -56,18 +61,9 @@ namespace API_Solution.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCarForDriverAsync(Guid driverId, [FromBody] CarForCreationDto car)
-        {
-            if (car == null)
-            {
-                _logger.LogError("CarForCreationDto object sent from client is  null.");
-                return BadRequest("CarForCreationDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CarForCreationDto object");
-                return UnprocessableEntity(ModelState);
-            }
+        {           
             var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
             if(driver == null)
             {
@@ -82,75 +78,36 @@ namespace API_Solution.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> DeleteCarForDriver(Guid driverId, Guid id) 
-        { 
-            var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
-            if(driver == null)
-            {
-                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
-                return NotFound();
-            }
-            var carForDriver = await _repository.Car.GetCarByIdAsync(driverId, id, trackChanges: false);
-            if (carForDriver == null)
-            {
-                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+        {
+            var carForDriver = HttpContext.Items["car"] as Car;            
             _repository.Car.DeleteCar(carForDriver);
             await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> UpdateCarForDriver(Guid driverId, Guid id, [FromBody] CarForUpdateDto car)
-        {
-            if (car == null)
-            {
-                _logger.LogError("CarForUpdateDto object sent from client is null.");
-                return BadRequest("CarForUpdateDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CarForCreationDto object");
-                return UnprocessableEntity(ModelState);
-            }
-            var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
-            if (driver == null)
-            {
-                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
-                return NotFound();
-            }
-            var carEntity = await _repository.Car.GetCarByIdAsync(driverId, id, trackChanges: true);
-            if (carEntity == null)
-            {
-                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+        {   
+            var carEntity = HttpContext.Items["car"] as Car;            
             _mapper.Map(car, carEntity);
             await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPatch("{id}")]
+        [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateCarForDriver(Guid driverId, Guid id, [FromBody] JsonPatchDocument<CarForUpdateDto> patchDoc)
         {
             if (patchDoc == null)
             {
                 _logger.LogError("patchDoc object sent from client is null.");
                 return BadRequest("patchDoc object is null");
-            }
-            var driver =await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);
-            if (driver == null)
-            {
-                _logger.LogInfo($"Driver with id: {driverId} doesn't exist in the database.");
-                return NotFound();
-            }
-            var carEntity = await _repository.Car.GetCarByIdAsync(driverId, id, trackChanges: true);
-            if (carEntity == null)
-            {
-                _logger.LogInfo($"Car with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+            }           
+            var carEntity = HttpContext.Items["car"] as Car;            
             var carToPatch = _mapper.Map<CarForUpdateDto>(carEntity);
             patchDoc.ApplyTo(carToPatch, ModelState);
             TryValidateModel(carToPatch);

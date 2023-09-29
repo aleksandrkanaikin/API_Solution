@@ -1,4 +1,5 @@
-﻿using API_Solution.Extensions;
+﻿using API_Solution.ActionFilters;
+using API_Solution.Extensions;
 using Contracts;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +40,11 @@ public class Startup
         {
             options.SuppressModelStateInvalidFilter = true;
         });
+        services.AddScoped<ValidationFilterAttribute>();
+        services.AddScoped<ValidateCompanyExistsAttribute>();
+        services.AddScoped<ValidateDriverExistsAtribute>();
+        services.AddScoped<ValidateEmployeeForCompanyExistsAttribute>();
+        services.AddScoped<ValidateCarForDriverExistsAttribute>();
 
     }
 

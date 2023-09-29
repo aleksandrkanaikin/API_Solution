@@ -1,4 +1,5 @@
-﻿using API_Solution.ModelBinders;
+﻿using API_Solution.ActionFilters;
+using API_Solution.ModelBinders;
 using AutoMapper;
 using Contracts;
 using Entities.DataTransferObjects;
@@ -44,18 +45,9 @@ namespace API_Solution.Controllers
         }
 
         [HttpPost]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateDriverAsync([FromBody] DriverForCreatonDto driver) 
-        {
-            if(driver == null)
-            {
-                _logger.LogError("DriverForCreatonDto object sent from client is  null.");
-                return BadRequest("DriverForCreatonDto object is null");
-            }
-            if (!ModelState.IsValid)
-            {
-                _logger.LogError("Invalid model state for the CarForCreationDto object");
-                return UnprocessableEntity(ModelState);
-            }
+        {            
             var driverEntity = _mapper.Map<Driver>(driver);
             _repository.Driver.CreateDriver(driverEntity);
             await _repository.SaveAsync();
@@ -101,33 +93,21 @@ namespace API_Solution.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ServiceFilter(typeof(ValidateDriverExistsAtribute))]
         public async Task<IActionResult> DeleteDriver(Guid id)
         {
-            var driver = _repository.Driver.GetDriverAsync(id, trackChanges: false);
-            if(driver == null)
-            {
-                _logger.LogInfo($"Driver with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
-            _repository.Driver.DeleteDriver(driver.Result);
+            var driver = HttpContext.Items["driver"] as Driver;
+            _repository.Driver.DeleteDriver(driver);
             await _repository.SaveAsync();
             return NoContent();
         }
 
         [HttpPut("{id}")]
+        [ServiceFilter(typeof(ValidationFilterAttribute))]
+        [ServiceFilter(typeof(ValidateDriverExistsAtribute))]
         public async Task<IActionResult> UpdateCompany(Guid id, [FromBody] DriverForUpdateDto driver)
-        {
-            if (driver == null)
-            { 
-                _logger.LogError("DriverForUpdateDto object sent from client is null.");
-                return BadRequest("DriverForUpdateDto object is null");
-            }
-            var driverEntity =await _repository.Driver.GetDriverAsync(id, trackChanges: true);
-            if (driverEntity == null)
-            {
-                _logger.LogInfo($"Company with id: {id} doesn't exist in the database.");
-                return NotFound();
-            }
+        {            
+            var driverEntity = HttpContext.Items["driver"] as Driver;
             _mapper.Map(driver, driverEntity);
             await _repository.SaveAsync();
             return NoContent();
