@@ -19,11 +19,14 @@ namespace API_Solution.Controllers
         private readonly IRepositoryManager _repository;
         private readonly ILoggerManager _logger;
         private readonly IMapper _mapper;
-        public CarsController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper)
+        private readonly IDataShaper<CarDto> _dataShaper;
+
+        public CarsController(IRepositoryManager repository, ILoggerManager logger, IMapper mapper, IDataShaper<CarDto> dataShaper)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
+            _dataShaper = dataShaper;
         }
 
         [HttpGet]
@@ -38,7 +41,7 @@ namespace API_Solution.Controllers
             var carsFromDB = await _repository.Car.GetCarsAsync(driverId, carParameters, trackChanges: false);
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(carsFromDB.MetaData));
             var carsDto = _mapper.Map<IEnumerable<CarDto>>(carsFromDB);
-            return Ok(carsDto);
+            return Ok(_dataShaper.ShapeData(carsDto, carParameters.Fields));
         }
 
         [HttpGet("{id}", Name = "GetCarForDriver")]

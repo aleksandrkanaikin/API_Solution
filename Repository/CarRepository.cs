@@ -3,6 +3,7 @@ using Entities;
 using Entities.Models;
 using Entities.RequestFeatures;
 using Microsoft.EntityFrameworkCore;
+using Repository.Extensions;
 
 namespace Repository
 {
@@ -15,8 +16,7 @@ namespace Repository
 
         public async Task<PagedList<Car>> GetCarsAsync(Guid driverId, CarParameters carParameters, bool trackChanges)
         {
-            var cars = await FindByCondition(c => c.DriverId.Equals(driverId) && (c.Brend[0] >= carParameters.FirstCarBrand[0] && c.Brend[0] <= carParameters.LastCarBrand[0]),
-                trackChanges).OrderBy(e => e.Brend).ToListAsync();
+            var cars = await FindByCondition(c => c.DriverId.Equals(driverId), trackChanges).Search(carParameters.SearchTerm).Sort(carParameters.OrderBy).ToListAsync();
             return PagedList<Car>.ToPagedList(cars, carParameters.PageNumber, carParameters.PageSize);
         }
         public async Task<Car> GetCarByIdAsync(Guid driverId, Guid id, bool trackChanges) => await FindByCondition(c => c.DriverId.Equals(driverId) &&
