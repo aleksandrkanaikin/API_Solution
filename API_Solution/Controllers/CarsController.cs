@@ -30,6 +30,7 @@ namespace API_Solution.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         public async Task<ActionResult> GetCarsWithHelpDriver(Guid driverId, [FromQuery] CarParameters carParameters)
         {
             var driver = await _repository.Driver.GetDriverAsync(driverId, trackChanges: false);

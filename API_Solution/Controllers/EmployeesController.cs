@@ -30,6 +30,7 @@ namespace API_Solution.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParametrs)
         {
             if (!employeeParametrs.ValidAgeRange) 
