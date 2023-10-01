@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Solution.Controllers
 {
+    [ApiVersion("2.0")]
     [Route("api/companies")]
     [ApiController]
     public class CompaniesV2Controller : ControllerBase

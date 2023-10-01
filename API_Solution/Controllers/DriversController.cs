@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API_Solution.Controllers
 {
+    [ApiVersion("1.0")]
     [Route("api/drivers")]
     [ApiController]
     public class DriversController : ControllerBase
