@@ -14,6 +14,7 @@ namespace API_Solution.Controllers
     [ApiVersion("1.0")]
     [Route("api/companies")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v1")]
     public class CompaniesController : ControllerBase
     {
         private readonly IRepositoryManager _repository;
@@ -25,6 +26,11 @@ namespace API_Solution.Controllers
             _logger = logger;
             _mapper = mapper;
         }
+
+        /// <summary>
+        /// Получает список всех компаний
+        /// </summary>
+        /// <returns> Список компаний</returns>.
         [HttpGet(Name = "GetCompanies"), Authorize(Roles = "Manager")]
         public async Task<IActionResult> GetCompanies()
         {

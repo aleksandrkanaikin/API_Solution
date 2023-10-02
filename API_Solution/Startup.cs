@@ -4,6 +4,7 @@ using Contracts;
 using Entities.DataTransferObjects;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 using NLog;
 using Repository;
 using Repository.DataShaping;
@@ -31,16 +32,14 @@ public class Startup
         services.ConfigureRepositoryManager();
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
-        {           
-            options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-        });
+        services.AddSwaggerGen();
+        services.ConfigureSwagger();
         services.AddAutoMapper(typeof(Startup));
         services.AddControllers(config =>
         {
             config.RespectBrowserAcceptHeader = true;
             config.ReturnHttpNotAcceptable = true;
-        }).AddNewtonsoftJson() 
+        }).AddNewtonsoftJson()
         .AddXmlDataContractSerializerFormatters()
         .AddCustomCSVFormatter();
         services.Configure<ApiBehaviorOptions>(options =>
@@ -69,25 +68,29 @@ public class Startup
         {
             app.UseDeveloperExceptionPage();
             app.UseSwagger();
-            app.UseSwaggerUI();
+            app.UseSwaggerUI(s =>
+            {
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Code Maze API v1");
+                s.SwaggerEndpoint("/swagger/v2/swagger.json", "Code Maze API v2");
+            });
+
+            app.ConfigureExceptionHandler(logger);
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseCors("CorsPolicy");
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.All
+            });
+
+            app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
-
-        app.ConfigureExceptionHandler(logger);
-        app.UseHttpsRedirection();
-        app.UseStaticFiles();
-        app.UseCors("CorsPolicy");
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.All
-        });
-
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
-
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllers();
-        });
     }
 }

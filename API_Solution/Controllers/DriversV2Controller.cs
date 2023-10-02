@@ -7,6 +7,8 @@ namespace API_Solution.Controllers
     [ApiVersion("2.0")]
     [Route("api/drivers")]
     [ApiController]
+    [ApiExplorerSettings(GroupName = "v2")]
+
     public class DriversV2Controller : ControllerBase
     {
         private readonly IRepositoryManager _repository;
