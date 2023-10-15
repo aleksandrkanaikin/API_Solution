@@ -39,6 +39,10 @@ namespace API_Solution.Controllers
             return Ok(companiesDto);
         }
 
+        /// <summary>
+        /// Получает компанию по Id
+        /// </summary>
+        /// <returns> Список компаний</returns>.
         [HttpGet("{id}", Name = "CompanyById")]
         public async Task<IActionResult> GetCompany(Guid id)
         {
