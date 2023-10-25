@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net.Sockets;
+//using System.Net.Sockets;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Repository
@@ -37,7 +38,14 @@ namespace Repository
         }
         private SigningCredentials GetSigningCredentials()
         {
-            var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            //var key = Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("SECRET"));
+            //var secret = new SymmetricSecurityKey(key);
+            //return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+            var key = new byte[32]; // 32 байта (256 бит)
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(key);
+            }
             var secret = new SymmetricSecurityKey(key);
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
         }
@@ -59,10 +67,7 @@ namespace Repository
             issuer: jwtSettings.GetSection("validIssuer").Value,
             audience: jwtSettings.GetSection("validAudience").Value,
             claims: claims,
-            expires:
-
-           DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.GetSection("expires").Value)
-           ),
+            expires: DateTime.Now.AddMinutes(Convert.ToDouble(jwtSettings.GetSection("expires").Value)),
             signingCredentials: signingCredentials
             );
             return tokenOptions;
