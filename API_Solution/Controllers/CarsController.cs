@@ -29,6 +29,9 @@ namespace API_Solution.Controllers
             _dataShaper = dataShaper;
         }
 
+        /// <summary>
+        /// Получает список всех машин для определенного водителя
+        /// </summary>
         [HttpGet]
         [HttpHead]
         public async Task<ActionResult> GetCarsWithHelpDriver(Guid driverId, [FromQuery] CarParameters carParameters)
@@ -45,6 +48,9 @@ namespace API_Solution.Controllers
             return Ok(_dataShaper.ShapeData(carsDto, carParameters.Fields));
         }
 
+        /// <summary>
+        /// Получает определенную машину для определенного водителя
+        /// </summary>
         [HttpGet("{id}", Name = "GetCarForDriver")]
         public async Task<ActionResult> GetCarWithHelpDriver(Guid driverId, Guid id)
         {
@@ -64,6 +70,9 @@ namespace API_Solution.Controllers
             return Ok(carDto);
         }
 
+        /// <summary>
+        /// Создает машину для определенного водителя
+        /// </summary>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCarForDriverAsync(Guid driverId, [FromBody] CarForCreationDto car)
@@ -81,6 +90,9 @@ namespace API_Solution.Controllers
             return CreatedAtRoute("GetCarForDriver", new { driverId, id = carToReturn.Id }, carToReturn);
         }
 
+        /// <summary>
+        /// Удаляет определенную машину для определенного водителя
+        /// </summary>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> DeleteCarForDriver(Guid driverId, Guid id) 
@@ -91,6 +103,9 @@ namespace API_Solution.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Редактирует определенную машину для определенного водителя
+        /// </summary>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
@@ -102,6 +117,9 @@ namespace API_Solution.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Редактирует определенную машину для определенного водителя
+        /// </summary>
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateCarForDriver(Guid driverId, Guid id, [FromBody] JsonPatchDocument<CarForUpdateDto> patchDoc)
