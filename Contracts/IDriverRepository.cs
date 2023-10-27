@@ -1,4 +1,5 @@
-﻿using Entities.Models;
+﻿using System;
+using Entities.Models;
 
 namespace Contracts
 {

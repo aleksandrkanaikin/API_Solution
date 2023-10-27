@@ -29,6 +29,7 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список всех водителей
         /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> GetDrivers()
         {
@@ -40,6 +41,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает водителя по Id
         /// </summary>
+        /// <param name="id">Id водителя</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "DriverById")]
         public async Task<IActionResult> GetDriverAsync(Guid id)
         {
@@ -56,6 +59,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Создает водителя
         /// </summary>
+        /// <param name="driver">Экземпляр нового водителя</param>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateDriverAsync([FromBody] DriverForCreatonDto driver) 
@@ -70,6 +75,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список водителей по их Id
         /// </summary>
+        /// <param name="ids">Id водителей которых хотим получить</param>
+        /// <returns></returns>
         [HttpGet("collection/({ids})", Name = "DriverCollection")]
         public async Task<IActionResult> GetDriverCollection(IEnumerable<Guid> ids) 
         {
@@ -91,6 +98,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Создает список водителей
         /// </summary>
+        /// <param name="driverCollection">Коллекция новых водителей</param>
+        /// <returns></returns>
         [HttpPost("collection")]
         public async Task<IActionResult> CreateDriverCollection([ModelBinder (BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> driverCollection)
         {
@@ -113,6 +122,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Удаляет водителя по Id
         /// </summary>
+        /// <param name="id">Id водителя которого удаляем</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateDriverExistsAtribute))]
         public async Task<IActionResult> DeleteDriver(Guid id)
@@ -126,6 +137,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует водителя по Id
         /// </summary>
+        /// <param name="id">Id водителя которого редактируем</param>
+        /// <param name="driver">Экземпляр редактированного водителя</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateDriverExistsAtribute))]

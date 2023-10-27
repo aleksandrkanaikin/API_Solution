@@ -25,7 +25,7 @@ namespace API_Solution.Controllers
             _userManager = userManager;
             _authManager = authManager;
         }
-
+       
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> RegisterUser([FromBody] UserForRegistrationDto userForRegistration)

@@ -30,6 +30,7 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список всех компаний
         /// </summary>
+        /// <returns></returns>
         [HttpGet(Name = "GetCompanies"), Authorize(Roles = "Manager")]
         public async Task<IActionResult> GetCompanies()
         {
@@ -41,6 +42,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает компанию по Id
         /// </summary>
+        /// <param name="id">Id компании</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "CompanyById")]
         public async Task<IActionResult> GetCompany(Guid id)
         {
@@ -58,8 +61,10 @@ namespace API_Solution.Controllers
         }
 
         /// <summary>
-        /// Удаляет компанию по Id
+        /// создает компанию
         /// </summary>
+        /// <param name="company">Экземпляр новой компании</param>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCompanyAsync([FromBody] CompanyForCreationDto company)
@@ -74,6 +79,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список определенных компаний по их Id
         /// </summary>
+        /// <param name="ids">Id компаний которые хотим получить</param>
+        /// <returns></returns>
         [HttpGet("collection/({ids})", Name = "CompanyCollection")]
         public IActionResult GetCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> ids)
         {
@@ -96,6 +103,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Создает список компаний
         /// </summary>
+        /// <param name="companyCollection">Коллекция новых компаний</param>
+        /// <returns></returns>
         [HttpPost("collection")]
         public async Task<IActionResult> CreateCompanyCollection([ModelBinder(BinderType = typeof(ArrayModelBinder))] IEnumerable<Guid> companyCollection)
         {
@@ -118,6 +127,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует компанию по Id
         /// </summary>
+        /// <param name="id">d компании которую редактируем</param>
+        /// <param name="company">Экземпляр редактированной компании</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]
@@ -132,6 +144,8 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Удаляет компанию по Id
         /// </summary>
+        /// <param name="id">Id компании которую удаляем</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateCompanyExistsAttribute))]
         public async Task<IActionResult> DeleteCompany(Guid id)

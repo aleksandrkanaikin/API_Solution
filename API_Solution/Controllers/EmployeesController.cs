@@ -32,6 +32,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список всех сотрудников для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="employeeParametrs">Параметры для частичных результатов запроса</param>
+        /// <returns></returns>
         [HttpGet]
         [HttpHead]
         public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, [FromQuery] EmployeeParameters employeeParametrs)
@@ -54,6 +57,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает определенного сотрудника для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="id">Id сотрудника которого хотим получить</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetEmployeeForCompany")]
         public async Task<IActionResult> GetEmployeeForCompanyAsync(Guid companyId, Guid id)
         {
@@ -76,6 +82,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Созает сотрудника для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="employee">Экземпляр новго сотрудника</param>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter (typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateEmployeeForCompanyAsync(Guid companyId, [FromBody] EmployeeForCreationDto employee)
@@ -96,6 +105,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Удаляет сотрудника для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="id">Id сотрудника которого хотим удалить</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
         public async Task<IActionResult> DeleteEmployeeForCompanyAsync(Guid companyId, Guid id)
@@ -109,6 +121,10 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует сотрудника для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="id">Id сотрудника которого редактируем</param>
+        /// <param name="employee">Экземпляр редактированного сотрудника</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter (typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
@@ -123,6 +139,10 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует сотрудника для определенной компании
         /// </summary>
+        /// <param name="companyId">Id компании</param>
+        /// <param name="id">Id сотрудника которого редактируем</param>
+        /// <param name="patchDoc">Параметры для patch запроса</param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateEmployeeForCompanyExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateEmployeeForCompanyAsync(Guid companyId, Guid id, [FromBody] JsonPatchDocument<EmployeeForUpdateDto> patchDoc)

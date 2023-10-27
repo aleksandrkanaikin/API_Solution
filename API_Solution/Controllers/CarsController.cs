@@ -1,4 +1,7 @@
-﻿using API_Solution.ActionFilters;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using API_Solution.ActionFilters;
 using API_Solution.ModelBinders;
 using AutoMapper;
 using Contracts;
@@ -32,6 +35,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает список всех машин для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="carParameters">Параметры для частичных результатов запроса</param>
+        /// <returns></returns>
         [HttpGet]
         [HttpHead]
         public async Task<ActionResult> GetCarsWithHelpDriver(Guid driverId, [FromQuery] CarParameters carParameters)
@@ -51,6 +57,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Получает определенную машину для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="id">Id машины которую хотим получить</param>
+        /// <returns></returns>
         [HttpGet("{id}", Name = "GetCarForDriver")]
         public async Task<ActionResult> GetCarWithHelpDriver(Guid driverId, Guid id)
         {
@@ -73,6 +82,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Создает машину для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="car">"Экземпляр новой машины</param>
+        /// <returns></returns>
         [HttpPost]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         public async Task<IActionResult> CreateCarForDriverAsync(Guid driverId, [FromBody] CarForCreationDto car)
@@ -93,6 +105,9 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Удаляет определенную машину для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="id">Id машины которую хотим удалить</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> DeleteCarForDriver(Guid driverId, Guid id) 
@@ -106,6 +121,10 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует определенную машину для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="id">Id машины которую редактируем</param>
+        /// <param name="car">Экземпляр редактированной машины</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
         [ServiceFilter(typeof(ValidationFilterAttribute))]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
@@ -120,6 +139,10 @@ namespace API_Solution.Controllers
         /// <summary>
         /// Редактирует определенную машину для определенного водителя
         /// </summary>
+        /// <param name="driverId">Id водителя</param>
+        /// <param name="id">Id машины которую редактируем</param>
+        /// <param name="patchDoc">Параметры для patch запроса</param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         [ServiceFilter(typeof(ValidateCarForDriverExistsAttribute))]
         public async Task<IActionResult> PartiallyUpdateCarForDriver(Guid driverId, Guid id, [FromBody] JsonPatchDocument<CarForUpdateDto> patchDoc)
